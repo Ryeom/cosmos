@@ -72,7 +72,7 @@ func SelectAll(client *mongo.Client, where map[string]string) map[string]string 
 		l = append(l, bson.E{Key: i, Value: v})
 	}
 	//E의 배열이 D
-	collection := client.Database("dcloudmongodb1").Collection("SizeMeta")
+	collection := client.Database("cosmos").Collection("SizeMeta")
 	cursor, err := collection.Find(context.TODO(), bson.D(l))
 	if err != nil {
 		log.Logger.Error("Find %s", err)
@@ -91,7 +91,35 @@ func SelectAll(client *mongo.Client, where map[string]string) map[string]string 
 
 func InsertOne(collection string, data bson.D) error {
 	c := MongoClient.Database("cosmos").Collection(collection)
-	insertResult, err := c.InsertOne(context.TODO(), data)
-	fmt.Println(insertResult)
+	r, err := c.InsertOne(context.TODO(), data)
+	fmt.Println(r)
+	return err
+}
+
+func InsertMany(collection string, data []bson.D) error {
+	c := MongoClient.Database("cosmos").Collection(collection)
+	r, err := c.InsertMany(context.Background(), data)
+	fmt.Println(r)
+	return err
+}
+
+func Update(collection string, data, filter bson.D) error {
+	c := MongoClient.Database("cosmos").Collection(collection)
+	r, err := c.UpdateOne(
+		context.TODO(),
+		filter,
+		data,
+	)
+	fmt.Println(r)
+	return err
+}
+
+func Delete(collection string, filter bson.D) error {
+	c := MongoClient.Database("cosmos").Collection(collection)
+	r, err := c.DeleteOne(
+		context.TODO(),
+		filter,
+	)
+	fmt.Println(r)
 	return err
 }
