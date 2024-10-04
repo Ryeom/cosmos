@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Ryeom/cosmos/log"
 	"github.com/Ryeom/cosmos/mongo"
+	"github.com/Ryeom/cosmos/psql"
 	"github.com/Ryeom/cosmos/router"
 	"github.com/Ryeom/cosmos/util"
 	"github.com/labstack/echo/v4"
@@ -24,10 +25,7 @@ func Cleanup() {
 
 func init() {
 	// [init 1] setting execution mode and environment
-	err := util.MustSetArguments()
-	if err != nil {
-		panic(exitCode{1}) // 그냥 그자리에서 패닉띄우기
-	}
+	util.MustSetArguments()
 	// [init 2] application log setting
 	log.MustInitializeApplicationLog()
 	// [init 3] Change different settings depending on the {mode}
@@ -43,6 +41,7 @@ func main() {
 	e.Use(router.Cors)
 
 	mongo.InitialiseMongo()
+	psql.InitializePostgresql()
 
 	router.Initialize(e)
 
