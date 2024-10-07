@@ -65,15 +65,16 @@ func ToBsonD(i interface{}) bson.D {
 
 /**************************************************/
 
-func SelectAll(client *mongo.Client, where map[string]string) map[string]string {
+func SelectAll(collection string, where map[string]string) map[string]string {
 	result := map[string]string{}
 	var l []bson.E
 	for i, v := range where {
+
 		l = append(l, bson.E{Key: i, Value: v})
 	}
 	//E의 배열이 D
-	collection := client.Database("cosmos").Collection("SizeMeta")
-	cursor, err := collection.Find(context.TODO(), bson.D(l))
+	c := MongoClient.Database("cosmos").Collection(collection)
+	cursor, err := c.Find(context.TODO(), bson.D(l))
 	if err != nil {
 		log.Logger.Error("Find %s", err)
 	}
