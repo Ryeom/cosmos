@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+	"github.com/Ryeom/cosmos/service/schedule"
 	"github.com/Ryeom/cosmos/service/workspace"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -9,7 +10,7 @@ import (
 
 func CreateSchedule(c echo.Context) error {
 	result := GetDefaultResult()
-	w := workspace.NewWorkspace()
+	w := schedule.Schedule{}
 	if bindErr := c.Bind(&w); bindErr != nil {
 		return c.JSON(http.StatusBadRequest, result)
 	}

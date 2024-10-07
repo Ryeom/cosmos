@@ -1,10 +1,7 @@
 package schedule
 
 import (
-	"fmt"
-	"github.com/Ryeom/cosmos/util"
-	"go.mongodb.org/mongo-driver/v2/bson"
-	"reflect"
+	"github.com/Ryeom/cosmos/mongo"
 	"time"
 )
 
@@ -24,34 +21,9 @@ type Schedule struct {
 	CreatedAt     time.Time `json:"createdAt" bson:"createdAt"`
 }
 
-func NewSchedule() *Schedule {
-	w := Schedule{
-		Id: util.GetUUID(),
-	}
-	return &w
-}
-
-func (s Schedule) toBsonD() bson.D {
-	d := bson.D{}
-	e := reflect.ValueOf(&s).Elem()
-	fieldNum := e.NumField()
-	for i := 0; i < fieldNum; i++ {
-		v := e.Field(i)
-		t := e.Type().Field(i)
-		fmt.Printf("[Name: %s] Type: %s | Value: %v\n",
-			t.Name, t.Type, v.Interface())
-		d = append(d, bson.E{Key: t.Name, Value: v.Interface()})
-	}
-	return d
-}
-
-func (s Schedule) Save() error {
+func (s Schedule) Insert() error {
 	var err error
-	//d := s.toBsonD()
-	//err = mongo.InsertOne("workspace", d)
+	d := mongo.ToBsonD(s)
+	err = mongo.InsertOne("schedule", d)
 	return err
-}
-
-func MaxIndex() int64 {
-	return 1
 }
